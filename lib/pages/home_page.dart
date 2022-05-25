@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUser();
-      
     });
   }
 
@@ -69,71 +68,87 @@ class _HomePageState extends State<HomePage> {
           ),
         )),
         Positioned(
-          top: size.width * 0.42,
-          right: size.height * 0.02,
-          child: Text(''), // avatarBottom(),
-        ),
-        Positioned(
-          bottom: -size.width * 0.34,
-          left: -size.width * 0.15,
-          child: Circle(
-            radius: size.width * 0.45,
-            colorsCircle: const [
-              Colors.lightGreenAccent,
-              Color.fromARGB(255, 113, 238, 177)
-            ],
-          ),
-        ),
-        Positioned(
-          bottom: -size.width * 0.3,
-          right: -size.width * 0.15,
-          child: Circle(
-            radius: size.width * 0.35,
-            colorsCircle: const [
-              Colors.pinkAccent,
-              Color.fromARGB(255, 248, 187, 208)
-            ],
-          ),
-        ),
-        SingleChildScrollView(
-          child: SizedBox(
-            width: size.width,
+          bottom: 0,
+          top: 150,
+          child: Container(
             height: size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Center(
-                  child: Text("Bienvenido"),
-                ),
-                if (_user == null) const CircularProgressIndicator(),
-                if (_user != null)
-                  Column(
-                    children: [Text(_user!.email), Text(_user!.usuario)],
+            child: Material(
+              elevation: 10,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: size.height * 0.1,
+                        left: size.width * 0.35,
+                        child: Column(children: [
+                          Text("Hola",
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          if (_user == null) const CircularProgressIndicator(),
+                          if (_user != null)
+                            Text(_user!.usuario,
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
+                        ]),
+                      ),
+                      const SizedBox(
+                        height: 17,
+                      ),
+                      Positioned(
+                        top: size.height * 0.3,
+                        left: size.width * 0.01,
+                        child: SizedBox(
+                          width: size.width / 2.1,
+                          height: size.height * 0.1,
+                          child: CupertinoButton(
+                            color: Colors.cyan[400],
+                            alignment: Alignment.topRight,
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'chatPages');
+                            },
+                            child: const Text("Ingresar al chat"),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 17,
+                      ),
+                      Positioned(
+                        top: size.height * 0.3,
+                        right: size.width * 0.01,
+                        child: SizedBox(
+                          width: size.width / 2.1,
+                          height: size.height * 0.1,
+                          child: CupertinoButton(
+                            color: Colors.cyan[400],
+                            alignment: Alignment.topRight,
+                            onPressed: _signOut,
+                            child: const Text("cerrar session"),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                const SizedBox(
-                  height: 17,
                 ),
-                CupertinoButton(
-                  color: Colors.cyan[400],
-                  alignment: Alignment.topRight,
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'chatPages');
-                  },
-                  child: const Text("Ingresar al chat"),
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                CupertinoButton(
-                  color: Colors.cyan[400],
-                  alignment: Alignment.topRight,
-                  onPressed: _signOut,
-                  child: const Text("cerrar session"),
-                ),
-              ],
+              ),
             ),
           ),
         ),
+        Positioned(
+            top: size.width * 0.2,
+            left: size.width * 0.3,
+            child: avatarBottom()),
       ]),
     ));
   }
