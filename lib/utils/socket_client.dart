@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-enum soquetStatus {
+enum SocketStatus {
   connecting,
   connected,
   joined,
@@ -14,11 +14,12 @@ class SocketClient {
   static final SocketClient _instance = SocketClient._internal();
   static SocketClient get instance => _instance;
 
-  StreamController<soquetStatus> _statusController = StreamController.broadcast();
+  StreamController<SocketStatus> _statusController = StreamController.broadcast();
 
-  Stream<soquetStatus> get status => _statusController.stream;
+  Stream<SocketStatus> get status => _statusController.stream;
 
   IO.Socket? _socket;
+  String _nickName = "";
   void connect() {
     this._socket = IO.io(
       'https://socketio-chat-h9jt.herokuapp.com',
@@ -28,21 +29,25 @@ class SocketClient {
     );
     _socket?.on('connect', (_) {
       print("conection socket");
-      this._statusController.sink.add(soquetStatus.connected);
+      this._statusController.sink.add(SocketStatus.connected);
     });
     _socket?.on('connect_error', (_) {
       print("error $_");
-      this._statusController.sink.add(soquetStatus.error);
+      this._statusController.sink.add(SocketStatus.error);
     });
     _socket?.on('disconnect', (_) {
       print("disconnect $_");
-      this._statusController.sink.add(soquetStatus.disconnected);
+      this._statusController.sink.add(SocketStatus.disconnected);
     });
   }
   
-
+  void joinToChat(String nickName){
+    _nickName = nickName;
+    _socket?.emit("add user", nickName);
+  }
   void disconnect() {
     _socket?.disconnect();
+    _socket = null;
   }
 
 

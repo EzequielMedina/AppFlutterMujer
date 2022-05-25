@@ -1,6 +1,7 @@
 
 import 'package:appcuidatemujer/helpers/dependency_injection.dart';
 import 'package:appcuidatemujer/pages/RegistrarPages.dart';
+import 'package:appcuidatemujer/pages/chat_page.dart';
 import 'package:appcuidatemujer/pages/home_page.dart';
 import 'package:appcuidatemujer/pages/splash_pages.dart';
 
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         RegistrarPages.routeName:(_) => RegistrarPages(),
         Loginpage.routeName:(_) => Loginpage(),
         HomePage.routeName:(_) => HomePage(),
-
+        ChatPages.routeName:(_) => ChatPages(),
       },
     );
   }

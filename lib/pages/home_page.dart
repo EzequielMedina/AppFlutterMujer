@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUser();
-      SocketClient.instance.connect();
     });
   }
 
@@ -43,7 +42,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _signOut() async {
-    SocketClient.instance.disconnect();
     await _autheticationClient.singOut();
     Navigator.pushNamedAndRemoveUntil(
       context,
