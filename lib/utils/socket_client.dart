@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 enum SocketStatus {
   connecting,
   connected,
@@ -8,47 +10,72 @@ enum SocketStatus {
   disconnected,
   error,
 }
+
 class SocketClient {
-  
   SocketClient._internal();
   static final SocketClient _instance = SocketClient._internal();
   static SocketClient get instance => _instance;
 
-  StreamController<SocketStatus> _statusController = StreamController.broadcast();
+  RxInt _numUsers = 0.obs;
+  RxString _inputText = "".obs;
+  Rx<SocketStatus> _status = SocketStatus.connecting.obs;
+  Rx<SocketStatus> get status => _status;
+  RxInt get numUsers => _numUsers;
 
-  Stream<SocketStatus> get status => _statusController.stream;
+
 
   IO.Socket? _socket;
   String _nickName = "";
+  Worker? _typingWorker;
+
+  void init(){
+    debounce(_inputText, (_){
+      _socket?.emit("stop typing");
+      _typingWorker = null;
+    }, time: Duration(milliseconds: 500));
+    
+  }
+
   void connect() {
-    this._socket = IO.io(
+    _socket = IO.io(
       'https://socketio-chat-h9jt.herokuapp.com',
       <String, dynamic>{
         'transports': ['websocket'], // for Flutter or Dart VM
       },
     );
     _socket?.on('connect', (_) {
-      print("conection socket");
-      this._statusController.sink.add(SocketStatus.connected);
+      _status.value = SocketStatus.connected;
     });
     _socket?.on('connect_error', (_) {
-      print("error $_");
-      this._statusController.sink.add(SocketStatus.error);
+      _status.value = SocketStatus.error;
     });
     _socket?.on('disconnect', (_) {
-      print("disconnect $_");
-      this._statusController.sink.add(SocketStatus.disconnected);
+      _status.value = SocketStatus.disconnected;
+    });
+    _socket?.on('login', (data) {
+      final int numUsers = data['numUsers'];
+      _numUsers.value =  numUsers;
+      _status.value = SocketStatus.joined;
+    });
+    _socket?.on('user joined', (data) {
+      _numUsers.value =  data['numUsers'] as int;
     });
   }
-  
-  void joinToChat(String nickName){
+
+  void joinToChat(String nickName) {
     _nickName = nickName;
     _socket?.emit("add user", nickName);
   }
+
   void disconnect() {
     _socket?.disconnect();
     _socket = null;
   }
-
-
+  void onInputChanged(String text){
+    if(_typingWorker == null){
+      _typingWorker =  once(_inputText, (_){});
+      _socket?.emit('typing');
+    }
+    _inputText.value = text;
+  }
 }
