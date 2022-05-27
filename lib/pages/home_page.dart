@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
       child: Stack(children: [
         Positioned(
             child: Container(
-          color: Colors.amberAccent,
           height: size.width * 0.6,
           child: Image(
             fit: BoxFit.cover,
@@ -85,14 +84,9 @@ class _HomePageState extends State<HomePage> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: size.height * 0.1,
+                        top: size.height * 0.15,
                         left: size.width * 0.35,
                         child: Column(children: [
-                          Text("Hola",
-                              style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black)),
                           if (_user == null) const CircularProgressIndicator(),
                           if (_user != null)
                             Text(_user!.usuario,
@@ -111,14 +105,8 @@ class _HomePageState extends State<HomePage> {
                         child: SizedBox(
                           width: size.width / 2.1,
                           height: size.height * 0.1,
-                          child: CupertinoButton(
-                            color: Colors.cyan[400],
-                            alignment: Alignment.topRight,
-                            onPressed: () {
-                              Navigator.pushNamed(context, 'chatPages');
-                            },
-                            child: const Text("Ingresar al chat"),
-                          ),
+                          child: const buttonNavigator(
+                              navigator: 'chatPages', texto: 'chat'),
                         ),
                       ),
                       const SizedBox(
@@ -130,11 +118,24 @@ class _HomePageState extends State<HomePage> {
                         child: SizedBox(
                           width: size.width / 2.1,
                           height: size.height * 0.1,
-                          child: CupertinoButton(
-                            color: Colors.cyan[400],
-                            alignment: Alignment.topRight,
-                            onPressed: _signOut,
-                            child: const Text("cerrar session"),
+                          child: Material(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            shadowColor: Color.fromARGB(255, 3, 169, 190),
+                            child: CupertinoButton(
+                              color: Color.fromARGB(255, 2, 214, 241),
+                              alignment: Alignment.topRight,
+                              onPressed: _signOut,
+                              child: Center(
+                                  child: Text(
+                                "Salir",
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              )),
+                            ),
                           ),
                         ),
                       ),
@@ -151,5 +152,37 @@ class _HomePageState extends State<HomePage> {
             child: avatarBottom()),
       ]),
     ));
+  }
+}
+
+class buttonNavigator extends StatelessWidget {
+  final String navigator;
+  final String texto;
+  const buttonNavigator({
+    Key? key,
+    required this.navigator,
+    required this.texto,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 10,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shadowColor: Color.fromARGB(255, 3, 169, 190),
+      child: CupertinoButton(
+        color: Color.fromARGB(255, 2, 214, 241),
+        alignment: Alignment.topRight,
+        onPressed: () {
+          Navigator.pushNamed(context, navigator);
+        },
+        child: Center(
+            child: Text(
+          texto,
+          style: const TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        )),
+      ),
+    );
   }
 }
