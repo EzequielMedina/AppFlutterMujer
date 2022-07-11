@@ -4,7 +4,7 @@ import 'package:appcuidatemujer/pages/RegistrarPages.dart';
 import 'package:appcuidatemujer/pages/chat_page.dart';
 import 'package:appcuidatemujer/pages/home_page.dart';
 import 'package:appcuidatemujer/pages/splash_pages.dart';
-
+import 'package:overlay_support/overlay_support.dart';
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return OverlaySupport(child: MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -32,6 +32,6 @@ class MyApp extends StatelessWidget {
         HomePage.routeName:(_) => HomePage(),
         ChatPages.routeName:(_) => ChatPages(),
       },
-    );
+    ));
   }
 }

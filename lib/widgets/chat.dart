@@ -1,4 +1,6 @@
+import 'package:appcuidatemujer/models/chat_message.dart';
 import 'package:appcuidatemujer/utils/socket_client.dart';
+import 'package:appcuidatemujer/widgets/input_chat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
@@ -21,23 +23,32 @@ class _ChatState extends State<Chat> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: Text("lalal")),
+            Expanded(child: Obx((){
+              final messages = SocketClient.instance.messages;
+              return ListView.builder(
+                itemBuilder: (_, index) {                 
+                  final ChatMessage message = messages[index];
+                  return ListTile(title: Text('${message.username} ${message.message}'));
+                },
+                itemCount: messages.length,
+              );
+            })),
             Obx(() {
               final String? typingUser = SocketClient.instance.typingUsers;
               if (typingUser != null) {
                 return Text(
                   "$typingUser is typing...",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black26,
                   ),
                 );
               } else {
-                return Container(height: 0,);
+                return Container(
+                  height: 0,
+                );
               }
             }),
-            CupertinoTextField(
-              onChanged: SocketClient.instance.onInputChanged,
-            ),
+            InputChat(),
           ],
         ),
       ),
